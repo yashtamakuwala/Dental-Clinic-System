@@ -44,18 +44,25 @@ def check_get_intents(result: dict):
     isGetDentists = False
     isGetName = False
     ans = None
+    name = None
     for intent in intents:
         if intent['name'] == GET_DENTISTS_INTENT:
             isGetDentists = True
             break
         elif intent["name"] == GET_NAME_INTENT:
             isGetName = True
+            name = get_dentist_name(result['entities'])
             break
 
     if isGetDentists or isGetName:
-        ans = get_all_dentists()
-    if
+        ans = get_all_dentists(name)
     return ans
+
+def get_dentist_name(entities:dict):
+    name = None
+    contact = entities['wit$contact:contact']
+    name = contact[0]['value']
+    return name
 
 def get_all_dentists(name: str):
     server = 'http://127.0.0.1:7000'
