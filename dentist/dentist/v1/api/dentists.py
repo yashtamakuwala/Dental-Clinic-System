@@ -11,10 +11,27 @@ class Dentists(Resource):
 
     def get(self):
         dentists = read_from_file()
-        dentists = dentists["dentists"]
+        dentists = dentists["data"]
+
+        args = request.args
+        name = str()
+        if args:
+            name = args.get('name')
+
+            for dentist in dentists:
+                if dentist["name"] == name:
+                    data = list()
+                    data.append(dentist)
+                    resp = {'data': data}
+                    return resp, 200, None
+
+        #     Not Found
+            return 404, None
+
         resp = {'data': dentists}
 
-        return dentists, 200, None
+        return resp, 200, None
+
 
 def read_from_file():
     fname = 'dentist_data.json'

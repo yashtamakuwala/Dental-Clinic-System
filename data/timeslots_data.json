@@ -1,0 +1,132 @@
+{
+	"timeslots": [{
+			"id": 1,
+			"slots": {
+				"9AM": {
+					"isAvailable": 1
+				},
+				"10AM": {
+					"isAvailable": 1
+				},
+				"11AM": {
+					"isAvailable": 1
+				},
+				"12PM": {
+					"isAvailable": 1
+				},
+				"1PM": {
+					"isAvailable": 1
+				},
+				"2PM": {
+					"isAvailable": 1
+				},
+				"3PM": {
+					"isAvailable": 1
+				},
+				"4PM": {
+					"isAvailable": 1
+				},
+				"5PM": {
+					"isAvailable": 1
+				}
+			}
+		},
+		{
+			"id": 2,
+			"slots": {
+				"9AM": {
+					"isAvailable": 1
+				},
+				"10AM": {
+					"isAvailable": 1
+				},
+				"11AM": {
+					"isAvailable": 1
+				},
+				"12PM": {
+					"isAvailable": 1
+				},
+				"1PM": {
+					"isAvailable": 1
+				},
+				"2PM": {
+					"isAvailable": 1
+				},
+				"3PM": {
+					"isAvailable": 1
+				},
+				"4PM": {
+					"isAvailable": 1
+				},
+				"5PM": {
+					"isAvailable": 1
+				}
+			}
+		},
+		{
+			"id": 3,
+			"slots": {
+				"9AM": {
+					"isAvailable": 1
+				},
+				"10AM": {
+					"isAvailable": 1
+				},
+				"11AM": {
+					"isAvailable": 1
+				},
+				"12PM": {
+					"isAvailable": 1
+				},
+				"1PM": {
+					"isAvailable": 1
+				},
+				"2PM": {
+					"isAvailable": 1
+				},
+				"3PM": {
+					"isAvailable": 1
+				},
+				"4PM": {
+					"isAvailable": 1
+				},
+				"5PM": {
+					"isAvailable": 1
+				}
+			}
+		},
+		{
+			"id": 4,
+			"slots": {
+				"9AM": {
+					"isAvailable": 1
+				},
+				"10AM": {
+					"isAvailable": 1
+				},
+				"11AM": {
+					"isAvailable": 1
+				},
+				"12PM": {
+					"isAvailable": 1
+				},
+				"1PM": {
+					"isAvailable": 1
+				},
+				"2PM": {
+					"isAvailable": 1
+				},
+				"3PM": {
+					"isAvailable": 1
+				},
+				"4PM": {
+					"isAvailable": 1
+				},
+				"5PM": {
+					"isAvailable": 1
+				}
+			}
+		}
+	]
+
+}

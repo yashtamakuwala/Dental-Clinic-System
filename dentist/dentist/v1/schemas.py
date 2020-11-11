@@ -53,10 +53,11 @@ base_path = '/v1'
 definitions = {'definitions': {'dentist': {'type': 'object', 'properties': {'name': {'type': 'string', 'example': 'John'}, 'id': {'type': 'integer', 'example': 100}, 'location': {'type': 'string', 'example': 'Sydney'}, 'specialisation': {'type': 'string', 'example': 'Orthodontics'}}, 'xml': {'name': 'dentist'}}}, 'parameters': {}}
 
 validators = {
+    ('dentists', 'GET'): {'args': {'required': [], 'properties': {'name': {'description': 'dentist name', 'required': False, 'type': 'string'}}}},
 }
 
 filters = {
-    ('dentists', 'GET'): {200: {'headers': None, 'schema': {'type': 'array', 'items': {'$ref': '#/definitions/dentist'}}}, 500: {'headers': None, 'schema': None}},
+    ('dentists', 'GET'): {200: {'headers': None, 'schema': {'properties': {'data': {'type': 'array', 'items': {'$ref': '#/definitions/dentist'}}}}}, 500: {'headers': None, 'schema': None}},
     ('dentists_id', 'GET'): {200: {'headers': None, 'schema': {'$ref': '#/definitions/dentist'}}, 404: {'headers': None, 'schema': None}},
 }
 

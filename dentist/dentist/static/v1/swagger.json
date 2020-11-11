@@ -13,13 +13,26 @@
         "produces": [
           "application/json"
         ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "description": "dentist name",
+            "required": false,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Operation successfull",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/dentist"
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/dentist"
+                  }
+                }
               }
             }
           },
