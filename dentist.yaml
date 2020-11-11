@@ -1,0 +1,34 @@
+swagger: "2.0"
+info:
+  description: "This is a dentist service"
+  version: "1.0.0"
+  title: "Dentist"
+
+basePath: "/v1"
+host: localhost:5000
+  
+schemes:
+- "https"
+- "http"
+
+paths:
+  /dentists:
+    get:
+      summary: Get dentists
+      produces: 
+        - application/json
+      parameters:
+        - in: query
+          name: id
+          description: dentist identifier
+          required: false
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            
+      
+        
+  
