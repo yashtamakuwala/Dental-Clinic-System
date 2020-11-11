@@ -13,12 +13,28 @@
         "produces": [
           "application/json"
         ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/dentists/{id}": {
+      "get": {
+        "summary": "Get dentists",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "in": "query",
+            "in": "path",
             "name": "id",
             "description": "dentist identifier",
-            "required": false,
+            "required": true,
             "type": "string"
           }
         ],

@@ -53,11 +53,11 @@ base_path = '/v1'
 definitions = {'definitions': {}, 'parameters': {}}
 
 validators = {
-    ('dentists', 'GET'): {'args': {'required': [], 'properties': {'id': {'description': 'dentist identifier', 'required': False, 'type': 'string'}}}},
 }
 
 filters = {
     ('dentists', 'GET'): {200: {'headers': None, 'schema': {'type': 'object'}}},
+    ('dentists_id', 'GET'): {200: {'headers': None, 'schema': {'type': 'object'}}},
 }
 
 scopes = {

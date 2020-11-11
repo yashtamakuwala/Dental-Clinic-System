@@ -7,9 +7,8 @@ from . import Resource
 from .. import schemas
 
 
-class Dentists(Resource):
+class DentistsId(Resource):
 
-    def get(self):
-        print(g.args)
+    def get(self, id):
 
         return {}, 200, None

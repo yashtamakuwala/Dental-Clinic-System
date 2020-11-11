@@ -17,18 +17,52 @@ paths:
       summary: Get dentists
       produces: 
         - application/json
+      responses:
+        "200":
+          description: "Operation successfull"
+          schema :
+            type: "array"
+            items:
+              $ref: '#/definitions/dentist'
+        "500":
+          description: "Internal Server Error"
+            
+        
+  /dentists/{id}:
+    get:
+      summary: Get dentists
+      produces: 
+        - application/json
       parameters:
-        - in: query
+        - in: path
           name: id
           description: dentist identifier
-          required: false
+          required: true
           type: string
       responses:
         200:
           description: OK
           schema:
             type: object
+            items:
+              $ref: '#/definitions/dentist'
             
-      
-        
-  
+
+definitions:
+  dentist:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "John"
+      id:
+        type: "integer"
+        example: 100
+      location:
+        type: "string"
+        example: "Sydney"
+      specialisation:
+        type: "string"
+        example: "Orthodontics"
+    xml:
+      name: "dentist"
