@@ -15,10 +15,16 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Operation successfull",
             "schema": {
-              "type": "object"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/dentist"
+              }
             }
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -35,17 +41,46 @@
             "name": "id",
             "description": "dentist identifier",
             "required": true,
-            "type": "string"
+            "type": "integer"
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "schema": {
-              "type": "object"
+              "$ref": "#/definitions/dentist"
             }
+          },
+          "404": {
+            "description": "Dentist doesn't exist."
           }
         }
+      }
+    }
+  },
+  "definitions": {
+    "dentist": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "John"
+        },
+        "id": {
+          "type": "integer",
+          "example": 100
+        },
+        "location": {
+          "type": "string",
+          "example": "Sydney"
+        },
+        "specialisation": {
+          "type": "string",
+          "example": "Orthodontics"
+        }
+      },
+      "xml": {
+        "name": "dentist"
       }
     }
   }

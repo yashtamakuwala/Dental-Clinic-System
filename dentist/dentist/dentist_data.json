@@ -1,22 +1,27 @@
 {
-  "1": {
-    "name": "John",
-    "location": "Kingsford",
-    "specialisation": "Paediatric Dentistry"
-  },
-  "2": {
-    "name": "Adam",
-    "location": "Maroubra",
-    "specialisation": "Orthodontics"
-  },
-  "3": {
-    "name": "Brian",
-    "location": "Randwick",
-    "specialisation": "Oral Surgery"
-  },
-  "4": {
-    "name": "Dom",
-    "location": "Eastlakes",
-    "specialisation": "Paediatric Dentistry"
-  }
+	"dentists": [{
+			"id": 1,
+			"name": "John",
+			"location": "Kingsford",
+			"specialisation": "Paediatric Dentistry"
+		},
+		{
+			"id": 2,
+			"name": "Adam",
+			"location": "Maroubra",
+			"specialisation": "Orthodontics"
+		},
+		{
+			"id": 3,
+			"name": "Brian",
+			"location": "Randwick",
+			"specialisation": "Oral Surgery"
+		},
+		{
+			"id": 4,
+			"name": "Dom",
+			"location": "Eastlakes",
+			"specialisation": "Paediatric Dentistry"
+		}
+	]
 }

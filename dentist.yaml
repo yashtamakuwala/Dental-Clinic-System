@@ -38,15 +38,14 @@ paths:
           name: id
           description: dentist identifier
           required: true
-          type: string
+          type: integer
       responses:
         200:
           description: OK
           schema:
-            type: object
-            items:
-              $ref: '#/definitions/dentist'
-            
+            $ref: '#/definitions/dentist'
+        404:
+          description: "Dentist doesn't exist."
 
 definitions:
   dentist:

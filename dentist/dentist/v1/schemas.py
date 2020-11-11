@@ -50,14 +50,14 @@ class RefNode(object):
 
 base_path = '/v1'
 
-definitions = {'definitions': {}, 'parameters': {}}
+definitions = {'definitions': {'dentist': {'type': 'object', 'properties': {'name': {'type': 'string', 'example': 'John'}, 'id': {'type': 'integer', 'example': 100}, 'location': {'type': 'string', 'example': 'Sydney'}, 'specialisation': {'type': 'string', 'example': 'Orthodontics'}}, 'xml': {'name': 'dentist'}}}, 'parameters': {}}
 
 validators = {
 }
 
 filters = {
-    ('dentists', 'GET'): {200: {'headers': None, 'schema': {'type': 'object'}}},
-    ('dentists_id', 'GET'): {200: {'headers': None, 'schema': {'type': 'object'}}},
+    ('dentists', 'GET'): {200: {'headers': None, 'schema': {'type': 'array', 'items': {'$ref': '#/definitions/dentist'}}}, 500: {'headers': None, 'schema': None}},
+    ('dentists_id', 'GET'): {200: {'headers': None, 'schema': {'$ref': '#/definitions/dentist'}}, 404: {'headers': None, 'schema': None}},
 }
 
 scopes = {
