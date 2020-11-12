@@ -1,5 +1,6 @@
 from .credentials import WIT_TOKEN
 import requests
+from flask_restful import current_app
 
 def ask_wit(expression: str):
     ep = 'https://api.wit.ai/message?v=20201112&q={}'.format(expression)
@@ -34,7 +35,7 @@ def answer_greeting(result: dict):
     ans = None
     if traits:
         if 'wit$greetings' in traits.keys():
-            ans = 'Hi, How are you?'
+            ans = 'Hi. Its a great day. How are you?'
     return ans
 
 def check_get_intents(result: dict):
@@ -71,5 +72,12 @@ def get_all_dentists(name: str):
         path = path + '?name=' + name
     result = requests.get(server+path)
     result = result.json()
+    ans = None
+    if name:
+        result = result["data"][0]
+        ans = f"Dr. {name} specialises in {result['specialisation']} and is located at {result['location']}."
+        current_app.name = name
+        current_app.id = result['id']
+        return ans
     print(result)
     return str(result)
