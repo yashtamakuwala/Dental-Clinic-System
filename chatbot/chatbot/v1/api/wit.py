@@ -2,6 +2,10 @@ from .credentials import WIT_TOKEN
 import requests
 from flask_restful import current_app
 
+DENT_SERVER = 'http://127.0.0.1'
+DENT_PORT = '7000'
+DENT_PATH = '/v1/dentists'
+
 def ask_wit(expression: str):
     ep = 'https://api.wit.ai/message?v=20201112&q={}'.format(expression)
     headers = {'Authorization': WIT_TOKEN}
@@ -49,8 +53,7 @@ def check_get_intents(result: dict):
     for intent in intents:
         if intent['name'] == GET_DENTISTS_INTENT:
             isGetDentists = True
-            break
-        elif intent["name"] == GET_NAME_INTENT:
+        if intent["name"] == GET_NAME_INTENT:
             isGetName = True
             name = get_dentist_name(result['entities'])
             break
@@ -66,18 +69,31 @@ def get_dentist_name(entities:dict):
     return name
 
 def get_all_dentists(name: str):
-    server = 'http://127.0.0.1:7000'
-    path = '/v1/dentists'
+
+    ep = DENT_SERVER + ':' + DENT_PORT + DENT_PATH
     if name:
-        path = path + '?name=' + name
-    result = requests.get(server+path)
+        ep = ep + '?name=' + name
+
+    result = requests.get(ep)
     result = result.json()
-    ans = None
+    ans = str()
+    result = result["data"]
+
+    # Searching for 1 dentist
     if name:
-        result = result["data"][0]
-        ans = f"Dr. {name} specialises in {result['specialisation']} and is located at {result['location']}."
-        current_app.name = name
-        current_app.id = result['id']
-        return ans
-    print(result)
-    return str(result)
+        if result:
+            result = result[0]
+            ans = f"Dr. {name} specialises in {result['specialisation']} and is located at {result['location']}."
+            current_app.name = name
+            current_app.id = result['id']
+            return ans
+        else:
+            ans = f"Dentist by the name {name} not found. Please check your details."
+            return ans
+    # Searching for ALL dentists
+    else:
+        if result:
+            for den in result:
+                ans += f"Dr. {den['name']}, "
+            ans = ans[:-2]
+            return f"Dentists {ans} are available."
