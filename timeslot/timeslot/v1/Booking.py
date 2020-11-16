@@ -2,7 +2,7 @@ import json
 
 
 class Booking:
-    def __init__(self, id:str, dentistName: str, time: int, patientName: str):
+    def __init__(self, id:str, dentistName: str, time: str, patientName: str):
         self.id = id
         self.dentistName = dentistName
         self.time = time

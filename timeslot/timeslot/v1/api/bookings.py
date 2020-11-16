@@ -21,7 +21,6 @@ class Bookings(Resource):
         if dentistName:
             all_bookings = get_by_dentistName(all_bookings, dentistName)
         if time:
-            time = int(time)
             all_bookings = get_by_time(all_bookings, time)
         if patientName:
             all_bookings = get_by_patientName(all_bookings, patientName)
@@ -31,7 +30,7 @@ class Bookings(Resource):
 
     def post(self):
         dentistName = str(request.json['dentistName'])
-        time = int(request.json['time'])
+        time = request.json['time']
         patientName = str(request.json['patientName'])
         id = generate_hash_id(dentistName, time, patientName)
         booking = Booking(id, dentistName, time, patientName)
@@ -46,7 +45,7 @@ class Bookings(Resource):
 
 def fetch_params_from_arg(arguments):
     dentistName = arguments.get('dentistName')
-    time = arguments.get('dentistName')
+    time = arguments.get('time')
     patientName = arguments.get('patientName')
 
     return dentistName, time, patientName
@@ -72,12 +71,12 @@ def get_by_patientName(all_bookings: list, patientName: str):
     vals = list()
     for booking in all_bookings:
         if booking['patientName'] == patientName:
-            vals.append(vals)
+            vals.append(booking)
     return vals
 
 
-def generate_hash_id(dentistName: str, time: int, patientName: str):
-    s = dentistName + str(time) + patientName
+def generate_hash_id(dentistName: str, time: str, patientName: str):
+    s = dentistName + time + patientName
     s = hashlib.md5(s.encode('utf-8')).hexdigest()
     s = s[:5]
     return s

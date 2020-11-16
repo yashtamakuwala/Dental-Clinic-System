@@ -4,17 +4,14 @@ from flask_restful import current_app
 from .Dentist import Dentist
 from .Patient import Patient
 
-DENT_SERVER = 'http://127.0.0.1'
-DENT_PORT = '7000'
-DENT_PATH = '/v1/dentists'
-
 dentist = Dentist()
+
 
 def ask_wit(expression: str, patient: Patient):
     ep = 'https://api.wit.ai/message?v=20201112&q={}'.format(expression)
     headers = {'Authorization': WIT_TOKEN}
 
-    result = requests.get(ep, headers= headers)
+    result = requests.get(ep, headers=headers)
     result = result.json()
 
     try:
@@ -29,6 +26,7 @@ def ask_wit(expression: str, patient: Patient):
     except KeyError as error:
         ans = 'Cant comprehend'
     return ans
+
 
 def ans_dentist(dentistData: list):
     ans = str()
@@ -49,6 +47,7 @@ def ans_dentist(dentistData: list):
         ans = f"Dentists {ans} are available."
         return ans, None
 
+
 def answer_greeting(result: dict):
     traits = result['traits']
     ans = None
@@ -56,6 +55,7 @@ def answer_greeting(result: dict):
         if 'wit$greetings' in traits.keys():
             ans = 'Hi. Its a great day. How are you?'
     return ans
+
 
 def check_get_intents(result: dict, patient: Patient):
     GET_DENTISTS_INTENT = "getDentists"
@@ -81,38 +81,9 @@ def check_get_intents(result: dict, patient: Patient):
     #     ans = get_all_dentists(name)
     return ans
 
-def get_dentist_name(entities:dict):
+
+def get_dentist_name(entities: dict):
     name = None
     contact = entities['wit$contact:contact']
     name = contact[0]['value']
     return name
-
-def get_all_dentists(name: str):
-
-    ep = DENT_SERVER + ':' + DENT_PORT + DENT_PATH
-    if name:
-        ep = ep + '?name=' + name
-
-    result = requests.get(ep)
-    result = result.json()
-    ans = str()
-    result = result["data"]
-
-    # Searching for 1 dentist
-    if name:
-        if result:
-            result = result[0]
-            ans = f"Dr. {name} specialises in {result['specialisation']} and is located at {result['location']}."
-            current_app.name = name
-            current_app.id = result['id']
-            return ans
-        else:
-            ans = f"Dentist by the name {name} not found. Please check your details."
-            return ans
-    # Searching for ALL dentists
-    else:
-        if result:
-            for den in result:
-                ans += f"Dr. {den['name']}, "
-            ans = ans[:-2]
-            return f"Dentists {ans} are available."
