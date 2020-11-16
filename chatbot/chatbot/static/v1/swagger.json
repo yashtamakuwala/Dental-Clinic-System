@@ -28,6 +28,13 @@
             "description": "user sentence",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "patient",
+            "description": "patient name",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
