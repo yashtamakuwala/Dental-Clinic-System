@@ -1,0 +1,197 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a timeslot service",
+    "version": "1.0.0",
+    "title": "Timeslot"
+  },
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "timeslots"
+    },
+    {
+      "name": "bookings"
+    }
+  ],
+  "paths": {
+    "/timeslots": {
+      "get": {
+        "summary": "Get valid timeslots",
+        "tags": [
+          "timeslots"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation successfull",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/bookings": {
+      "post": {
+        "summary": "Add a booking",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "makeBooking",
+            "description": "The booking to create",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/makeBooking"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "example": "45a"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get bookings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "dentistName",
+            "description": "Name of dentist",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "patientName",
+            "description": "Name of Patient",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "time",
+            "description": "Time of Booking",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "properties": {
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/booking"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "dentist": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "John"
+        },
+        "id": {
+          "type": "integer",
+          "example": 100
+        },
+        "location": {
+          "type": "string",
+          "example": "Sydney"
+        },
+        "specialisation": {
+          "type": "string",
+          "example": "Orthodontics"
+        }
+      },
+      "xml": {
+        "name": "dentist"
+      }
+    },
+    "makeBooking": {
+      "type": "object",
+      "properties": {
+        "dentistName": {
+          "type": "string",
+          "example": "Dr. Alicia"
+        },
+        "time": {
+          "type": "string",
+          "example": "9"
+        },
+        "patientName": {
+          "type": "string",
+          "example": "Jordana"
+        }
+      }
+    },
+    "booking": {
+      "type": "object",
+      "properties": {
+        "dentistName": {
+          "type": "string",
+          "example": "Dr. Alicia"
+        },
+        "time": {
+          "type": "string",
+          "example": "9"
+        },
+        "patientName": {
+          "type": "string",
+          "example": "Jordana"
+        },
+        "id": {
+          "type": "string",
+          "example": "aas345"
+        }
+      }
+    }
+  }
+}
