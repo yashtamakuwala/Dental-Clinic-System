@@ -19,7 +19,7 @@ def ask_wit(expression: str, patient: Patient):
     result = result.json()
 
     try:
-        ans = answer_greeting(result)
+        ans = answer_greeting(result, patient.name)
         if ans:
             patient.hiDone = True
             return ans
@@ -37,14 +37,10 @@ def ans_dentist(dentistData: list):
     ans = str()
     if len(dentistData) == 1:
         result = dentistData[0]
-        ans = f"Dentist {result['name']} specialises in {result['specialisation']} and is located at {result['location']}."
+        ans = f"Dentist {result['name']} specialises in {result['specialisation']} and is located at {result['location']}. " \
+              f"When would you like an appointment?"
         return ans, result['id']
-
-        # TODO: handle not found
-        # else:
-        #     ans = f"Dentist by the name {name} not found. Please check your details."
-        #     return ans
-    # Searching for ALL dentists
+    
     else:
         for den in dentistData:
             ans += f" {den['name']}, "
@@ -53,47 +49,115 @@ def ans_dentist(dentistData: list):
         return ans, None
 
 
-def answer_greeting(result: dict):
+def answer_greeting(result: dict, name: str):
     traits = result['traits']
     ans = None
     if traits:
         if 'wit$greetings' in traits.keys():
-            ans = 'Hi. Its a great day. How may I assist you?'
+            ans = f'Hi {name}. Its a great day. How may I assist you?'
     return ans
 
 
 def check_get_intents(result: dict, patient: Patient):
     GET_DENTISTS_INTENT = "getDentists"
     GET_NAME_INTENT = "name"
+    TIME_SELECTED = 'timeSelected'
+    CONFIRMATION = 'confirmation'
 
     intents = result['intents']
     ans = None
-    name = None
     for intent in intents:
         intentName = intent['name']
 
         if intentName == GET_DENTISTS_INTENT:
             allDentists = dentist.get_all_dentists(name=None)
-            # TODO: check for their time availability
             allDentists = available_dentists(allDentists)
             ans, id = ans_dentist(allDentists)
-            patient.getAllDentists = True
+
 
         #  Patient name available so this name is doctor name
         if intentName == GET_NAME_INTENT and patient.name:
             name = get_dentist_name(result['entities'])
             result = dentist.get_all_dentists(name)
             if result:
+                patient.dentistName = result[0]['name']
                 ans, id = ans_dentist(result)
 
             else:
                 ans = f'Dentist by the name {name} not found.'
 
+        # Patient has selected doctor and asking for appointment at a particular time
+        if patient.dentistName and intentName == TIME_SELECTED:
+            witTime = result['entities']['wit$datetime:datetime'][0]
+            hh, mm = time_entity(witTime)
+            # TODO: check the 24 hr time values
+            ans = time_selected_response(hh, patient)
+
+        if patient.time and patient.dentistName and intentName == CONFIRMATION:
+            ans = confirmation(result['entities']['confirmation:confirmation'],patient)
+
+    return ans
+
+def confirmation(confirmDict: dict, patient: Patient):
+    value = confirmDict['value']
+    ans = str()
+    value = value == 'yes'
+    if value:
+        patient.confirmation = True
+        ans = f'Hey {patient.name} your booking with Dr. {patient.dentistName}' \
+              f'at {patient.time} has been confirmed. See you tomorrow at {patient.time}.'
+    else:
+        ans = 'Okay. You could book for another time.' \
+              ' Alternatively, I can also show you all available dentists.'
     return ans
 
 
+
+def time_selected_response(hh:str, patient: Patient) -> str:
+    hh = str(hh if hh < 16 else hh - 12)
+    ans = None
+    result = booking.get_bookings(dentistName=patient.dentistName,
+                                  time=hh, patientName=None)
+
+    # if found then dentist already booked for that hour
+    # ans suggest alternate timeslots
+    if result:
+        altHours = alternate_timeslots(hh=hh)
+        ans = f'Dr. {patient.dentistName} is booked at {hh}. ' \
+              f'Here are alternate 1 hr timeslots you might want to book for.' \
+              f'You can book from - {altHours}'
+
+    else:
+        patient.time = hh
+        ans = f'Dr. {patient.dentistName} is available at {hh}. ' \
+              f'Do you want to book it?'
+    return ans
+
+
+def alternate_timeslots(hh:str):
+    validHours = timeslot.get_all_timeslots()
+    validHours = set(validHours.split(','))
+    validHours = validHours.difference({hh})
+    validHours = ' '.join(validHours)
+    return validHours
+
+
+def time_entity(witTime: dict) -> (int, int):
+    value = witTime['value']
+    # 2020-11-17T04:00:00.000-08:00
+
+    value = value.split('T')[1]
+    # 04:00:00.000-08:00
+    value = value.split(':')
+    hh, mm = int(value[0]), int(value[1])
+    return hh, mm
+
+
+
+
 def available_dentists(allDentists: list) -> list:
-    validHours = len(timeslot.get_all_timeslots())
+    validHours = timeslot.get_all_timeslots()
+    validHours = len(validHours.split(','))
     av_dentists = list()
     for i, dent in enumerate(allDentists):
         name = dent['name']

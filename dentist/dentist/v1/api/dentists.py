@@ -25,12 +25,7 @@ class Dentists(Resource):
                     resp = {'data': data}
                     return resp, 200, None
             resp = {'data': data}
-            if data:
-                return resp, 200, None
-
-            #     Not Found
-            else:
-                return 404, None
+            return resp, 200, None
 
         resp = {'data': dentists}
         return resp, 200, None
