@@ -25,6 +25,7 @@ class Ask(Resource):
                     if pat.name == patientName:
                         isFound = True
                         patient = pat
+                        break
 
         if not isFound:
             patient = Patient()

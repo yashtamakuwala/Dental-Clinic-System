@@ -50,7 +50,7 @@ class RefNode(object):
 
 base_path = '/v1'
 
-definitions = {'definitions': {'dentist': {'type': 'object', 'properties': {'name': {'type': 'string', 'example': 'John'}, 'id': {'type': 'integer', 'example': 100}, 'location': {'type': 'string', 'example': 'Sydney'}, 'specialisation': {'type': 'string', 'example': 'Orthodontics'}}, 'xml': {'name': 'dentist'}}, 'makeBooking': {'type': 'object', 'properties': {'dentistName': {'type': 'string', 'example': 'Dr. Alicia'}, 'time': {'type': 'string', 'example': '9'}, 'patientName': {'type': 'string', 'example': 'Jordana'}}}, 'booking': {'type': 'object', 'properties': {'dentistName': {'type': 'string', 'example': 'Dr. Alicia'}, 'time': {'type': 'string', 'example': '9'}, 'patientName': {'type': 'string', 'example': 'Jordana'}, 'id': {'type': 'string', 'example': 'aas345'}}}}, 'parameters': {}}
+definitions = {'definitions': {'makeBooking': {'type': 'object', 'properties': {'dentistName': {'type': 'string', 'example': 'Dr. Alicia'}, 'time': {'type': 'string', 'example': '9'}, 'patientName': {'type': 'string', 'example': 'Jordana'}}}, 'booking': {'type': 'object', 'properties': {'dentistName': {'type': 'string', 'example': 'Dr. Alicia'}, 'time': {'type': 'string', 'example': '9'}, 'patientName': {'type': 'string', 'example': 'Jordana'}, 'id': {'type': 'string', 'example': 'aas345'}}}}, 'parameters': {}}
 
 validators = {
     ('bookings', 'POST'): {'json': {'$ref': '#/definitions/makeBooking'}},
@@ -59,8 +59,9 @@ validators = {
 
 filters = {
     ('timeslots', 'GET'): {200: {'headers': None, 'schema': {'properties': {'data': {'type': 'string'}}}}, 500: {'headers': None, 'schema': None}},
-    ('bookings', 'POST'): {201: {'headers': None, 'schema': {'properties': {'id': {'type': 'string', 'example': '45a'}}}}, 400: {'headers': None, 'schema': None}},
+    ('bookings', 'POST'): {201: {'headers': None, 'schema': {'properties': {'id': {'type': 'string', 'example': '45a9h'}}}}, 400: {'headers': None, 'schema': None}},
     ('bookings', 'GET'): {200: {'headers': None, 'schema': {'properties': {'data': {'type': 'array', 'items': {'$ref': '#/definitions/booking'}}}}}, 400: {'headers': None, 'schema': None}},
+    ('bookings_id', 'DELETE'): {204: {'headers': None, 'schema': None}, 400: {'headers': None, 'schema': None}},
 }
 
 scopes = {

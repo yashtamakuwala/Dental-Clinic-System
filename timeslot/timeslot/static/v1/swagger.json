@@ -68,7 +68,7 @@
               "properties": {
                 "id": {
                   "type": "string",
-                  "example": "45a"
+                  "example": "45a9h"
                 }
               }
             }
@@ -128,33 +128,37 @@
           }
         }
       }
+    },
+    "/bookings/{id}": {
+      "delete": {
+        "summary": "Delete bookings",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "bookings"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of booking to delete",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
     }
   },
   "definitions": {
-    "dentist": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "John"
-        },
-        "id": {
-          "type": "integer",
-          "example": 100
-        },
-        "location": {
-          "type": "string",
-          "example": "Sydney"
-        },
-        "specialisation": {
-          "type": "string",
-          "example": "Orthodontics"
-        }
-      },
-      "xml": {
-        "name": "dentist"
-      }
-    },
     "makeBooking": {
       "type": "object",
       "properties": {

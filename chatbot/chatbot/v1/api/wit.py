@@ -71,6 +71,7 @@ def check_get_intents(result: dict, patient: Patient):
     GET_NAME_INTENT = "name"
     TIME_SELECTED = 'timeSelected'
     CONFIRMATION = 'confirmation'
+    CANCELLATION = 'cancel'
 
     intents = result['intents']
     ans = None
@@ -78,7 +79,7 @@ def check_get_intents(result: dict, patient: Patient):
     for intent in intents:
         intentName = intent['name']
 
-        if intentName == GET_NAME_INTENT and not patient.name:
+        if intentName == GET_NAME_INTENT and not patient.name and not patient.wantingToCancel:
             name = get_name(result['entities'])
             patient.set_patient_name(name)
             break
@@ -91,7 +92,9 @@ def check_get_intents(result: dict, patient: Patient):
             break
 
         #  Patient name available so this name is doctor name
-        if intentName == GET_NAME_INTENT and patient.name and not patient.dentistName:
+        if intentName == GET_NAME_INTENT \
+                and patient.name and not patient.dentistName \
+                and not patient.wantingToCancel:
             name = get_name(result['entities'])
             result = dentist.get_all_dentists(name)
             if result:
@@ -102,7 +105,8 @@ def check_get_intents(result: dict, patient: Patient):
             break
 
         # Patient has selected doctor and asking for appointment at a particular time
-        if patient.dentistName and intentName == TIME_SELECTED:
+        if patient.dentistName and intentName == TIME_SELECTED \
+                and not patient.cancelTime:
             witTime = result['entities']['wit$datetime:datetime'][0]
             hh, mm = time_entity(witTime)
             # TODO: check the 24 hr time values
@@ -111,16 +115,98 @@ def check_get_intents(result: dict, patient: Patient):
         if patient.time and patient.dentistName and intentName == CONFIRMATION:
             ans = confirmation(result['entities']['confirmation:confirmation'][0], patient)
 
+        # Requested to cancel
+        if patient.name and intentName == CANCELLATION \
+                and not patient.dentistName and not patient.cancelTime:
+            ans = get_bookings_to_cancel(patient)
+
+        # get all bookings and ask by dentist name
+        if patient.name and intentName == GET_NAME_INTENT \
+                and patient.wantingToCancel and not patient.cancelDentist:
+            cancelDentist = get_name(entities=result['entities'])
+            ans = cancel_dentist_response(cancelDentist, patient)
+            break
+
+        # get bookings and time of appointment to cancel
+        if patient.name and patient.wantingToCancel and patient.cancelDentist \
+                and not patient.cancelTime:
+            witTime = result['entities']['wit$datetime:datetime'][0]
+            hh, mm = time_entity(witTime)
+            # TODO: check the 24 hr time values
+            ans = cancel_time_response(hh, patient)
+
+        # Got cancel details and now confirmation to cancel
+        if patient.name and patient.wantingToCancel and \
+                patient.cancelDentist and patient.cancelTime:
+            ans = confirmation(result['entities']['confirmation:confirmation'][0], patient)
+
     return ans, name
+
+
+def cancel_time_response(time: str, patient: Patient):
+    patient.cancelTime = time
+    ans = f"Are you sure you want to cancel " \
+          f"your booking with {patient.dentistName} at {time}"
+    return ans
+
+
+def cancel_dentist_response(cancelDentist: str, patient: Patient):
+    result = dentist.get_all_dentists(cancelDentist)
+    if result:
+        patient.cancelDentist = cancelDentist
+        result = booking.get_bookings(dentistName=cancelDentist, time=None,
+                                      patientName=patient.name)
+        if result:
+            t = str()
+            for app in result:
+                t += str(app['time']) + ', '
+                t = t[:-2]
+            ans = f'you have appointment with {cancelDentist} at {t}. Select time you want to cancel.'
+    else:
+        ans = f'Dentist by the name {cancelDentist} not found.'
+    return ans
+
+
+def get_bookings_to_cancel(patient: Patient):
+    patient.wantingToCancel = True
+    allBookings = booking.get_bookings(dentistName=None, time=None, patientName=patient.name)
+    ans = str()
+
+    if allBookings:
+        for appoint in allBookings:
+            ans += str(appoint['time']) + f" with dentist {appoint['dentistName']}" + ', '
+        ans = ans[:-2]
+    ans = f'You have booking(s) at {ans}. Enter dentist whose booking you wish to cancel.'
+    return ans
+
+
+def confirm_cancel(confirmDict: dict, patient: Patient):
+    value = confirmDict['value']
+    value = value == 'yes'
+
+    # yes, cancel booking
+    if value:
+        res = booking.get_bookings(dentistName=patient.cancelDentist, time=patient.cancelTime,
+                                   patientName=patient.name)
+        id = res[0]['id']
 
 
 def confirmation(confirmDict: dict, patient: Patient):
     value = confirmDict['value']
     value = value == 'yes'
 
-    # Yes, book appointment
+    # Yes, book booking
     if value:
         patient.confirmation = True
+        # TODO: check if patient already has a booking at that time.
+        res = booking.get_bookings(dentistName=None, time=patient.time,
+                                   patientName=patient.name)
+
+        if res:
+            ans = 'You already have a booking at that time. ' \
+                  'Please select an alternate booking time.'
+            return ans
+
         bId = booking.add_booking(dentistName=patient.dentistName, time=patient.time,
                                   patientName=patient.name)
         if bId:
@@ -128,7 +214,7 @@ def confirmation(confirmDict: dict, patient: Patient):
                   f'at {patient.time} has been confirmed. ' \
                   f'Your booking id is {bId}. ' \
                   f'See you tomorrow at {patient.time}.'
-            patient.confirm_appointment()
+            patient.confirm_appointment(bId)
         else:
             ans = 'Could not book. Please check your details and try again'
     else:

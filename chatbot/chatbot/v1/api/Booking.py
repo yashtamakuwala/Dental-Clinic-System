@@ -31,6 +31,14 @@ class Booking:
         else:
             return None
 
+    def delete_booking(self, id):
+        ep = ep = TIME_SERVER + TIME_PORT + GET_BOOKINGS + '/' + str(id)
+        result = requests.delete(ep)
+
+        if result.status_code == 204:
+            return 'Deleted.'
+        else:
+            return None
 
 def build_params(dentistName: str, time: str, patientName: str):
     params = {}

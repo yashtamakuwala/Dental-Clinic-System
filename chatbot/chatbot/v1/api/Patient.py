@@ -6,6 +6,11 @@ class Patient:
         self.dentistName = None
         self.time = None
         self.confirmation = False
+        self.wantingToCancel = False
+        self.bookingId = None
+        self.cancelDentist = None
+        self.cancelTime = None
+        self.cancelDone = False
 
     def set_patient_name(self, ptName: str):
         self.name = ptName
@@ -28,8 +33,9 @@ class Patient:
         self.time = hh
         self.confirmation = False
 
-    def confirm_appointment(self):
+    def confirm_appointment(self, bookingId):
         self.confirmation = True
+        self.bookingId = bookingId
 
     def decline_appointment(self):
         self.confirmation = False
