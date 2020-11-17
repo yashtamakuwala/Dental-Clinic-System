@@ -17,16 +17,15 @@ class Booking:
         else:
             return None
 
-
-    # TODO: input validation
     def add_booking(self, dentistName: str, time: str, patientName: str) -> int:
         ep = TIME_SERVER + TIME_PORT + POST_BOOKINGS
         body = build_params(dentistName, time, patientName)
 
         result = requests.post(ep, json=body)
-        result = result.json()
+
 
         if result.status_code == 201:
+            result = result.json()
             id = result['id']
             return id
         else:

@@ -33,8 +33,6 @@ def ask_wit(expression: str, patient: Patient):
             else:
                 return ans2, name
 
-
-
     except KeyError as error:
         ans = 'Cant comprehend'
     return ans
@@ -165,7 +163,7 @@ def alternate_timeslots(hh: str):
     validHours = timeslot.get_all_timeslots()
     validHours = set(validHours.split(','))
     validHours = validHours.difference({hh})
-    validHours = ' '.join(validHours)
+    validHours = ' ,'.join(validHours)
     return validHours
 
 

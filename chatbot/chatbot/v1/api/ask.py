@@ -30,7 +30,11 @@ class Ask(Resource):
             patient = Patient()
             patients.append(patient)
 
-        ans, name = ask_wit(expression, patient)
+        res = ask_wit(expression, patient)
+        if res:
+            ans, name = res[0], res[1]
+        else:
+            ans, name = "What's your good name?", ''
         delete_noname_patients()
 
         resp = {'answer': ans, 'name': name}
