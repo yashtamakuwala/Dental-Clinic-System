@@ -53,11 +53,11 @@ base_path = '/v1'
 definitions = {'definitions': {}, 'parameters': {}}
 
 validators = {
-    ('ask', 'GET'): {'args': {'required': ['message', 'patient'], 'properties': {'message': {'description': 'user sentence', 'type': 'string'}, 'patient': {'description': 'patient name', 'type': 'string'}}}},
+    ('ask', 'GET'): {'args': {'required': ['message'], 'properties': {'message': {'description': 'user sentence', 'type': 'string'}, 'patient': {'description': 'patient name', 'required': False, 'type': 'string'}}}},
 }
 
 filters = {
-    ('ask', 'GET'): {200: {'headers': None, 'schema': {'type': 'object', 'properties': {'answer': {'type': 'string'}}}}},
+    ('ask', 'GET'): {200: {'headers': None, 'schema': {'type': 'object', 'properties': {'answer': {'type': 'string'}, 'name': {'type': 'string'}}}}},
 }
 
 scopes = {

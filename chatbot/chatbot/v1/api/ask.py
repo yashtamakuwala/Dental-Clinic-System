@@ -19,16 +19,20 @@ class Ask(Resource):
         isFound = False
         patient = None
 
-        for pat in patients:
-            if patientName:
-                if pat.name == patientName:
-                    isFound = True
-                    patient = pat
-            # 1st request
-            else:
-                patient = Patient()
-                patients.append(patient)
+        if patients:
+            for pat in patients:
+                if patientName:
+                    if pat.name == patientName:
+                        isFound = True
+                        patient = pat
 
-        ans = ask_wit(expression, patient)
-        resp = {'answer': ans}
+        if not isFound:
+            patient = Patient()
+            patients.append(patient)
+
+        ans, name = ask_wit(expression, patient)
+        if not name:
+            del patient
+
+        resp = {'answer': ans, 'name': name}
         return resp, 200, None

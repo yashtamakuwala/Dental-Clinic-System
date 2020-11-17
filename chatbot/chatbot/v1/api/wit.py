@@ -22,11 +22,13 @@ def ask_wit(expression: str, patient: Patient):
         ans = answer_greeting(result, patient.name)
         if ans:
             patient.hiDone = True
-        # return ans
+            return ans, ''
 
-        ans = check_get_intents(result, patient)
-        if ans:
-            return ans
+        ans2, name = check_get_intents(result, patient)
+        if not ans2 and name:
+            return ('Hi', name)
+        else:
+            return ans2, name
 
     except KeyError as error:
         ans = 'Cant comprehend'
@@ -69,7 +71,7 @@ def check_get_intents(result: dict, patient: Patient):
 
     intents = result['intents']
     ans = None
-    name = None
+    name = patient.name if patient else None
     for intent in intents:
         intentName = intent['name']
 
@@ -106,7 +108,7 @@ def check_get_intents(result: dict, patient: Patient):
         if patient.time and patient.dentistName and intentName == CONFIRMATION:
             ans = confirmation(result['entities']['confirmation:confirmation'], patient)
 
-    return ans
+    return ans, name
 
 
 def confirmation(confirmDict: dict, patient: Patient):

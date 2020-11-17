@@ -33,7 +33,7 @@
             "in": "query",
             "name": "patient",
             "description": "patient name",
-            "required": true,
+            "required": false,
             "type": "string"
           }
         ],
@@ -44,6 +44,9 @@
               "type": "object",
               "properties": {
                 "answer": {
+                  "type": "string"
+                },
+                "name": {
                   "type": "string"
                 }
               }
