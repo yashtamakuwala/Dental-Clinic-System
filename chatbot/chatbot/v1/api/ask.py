@@ -31,8 +31,16 @@ class Ask(Resource):
             patients.append(patient)
 
         ans, name = ask_wit(expression, patient)
-        if not name:
-            del patient
+        delete_noname_patients()
 
         resp = {'answer': ans, 'name': name}
         return resp, 200, None
+
+
+def delete_noname_patients():
+    patients = current_app.patients
+    newP = list()
+    for pat in patients:
+        if pat.name:
+            newP.append(pat)
+    current_app.patients = newP

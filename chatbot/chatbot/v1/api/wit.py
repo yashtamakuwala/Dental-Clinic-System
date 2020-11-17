@@ -19,16 +19,21 @@ def ask_wit(expression: str, patient: Patient):
     result = result.json()
 
     try:
-        ans = answer_greeting(result, patient.name)
-        if ans:
-            patient.hiDone = True
-            return ans, ''
 
         ans2, name = check_get_intents(result, patient)
         if not ans2 and name:
-            return ('Hi', name)
+            patient.hiDone = True
+            return (f'Hi {name}', name)
         else:
-            return ans2, name
+            if not patient.hiDone:
+                ans = answer_greeting(result, patient.name)
+                if ans:
+                    patient.hiDone = True
+                    return ans, ''
+            else:
+                return ans2, name
+
+
 
     except KeyError as error:
         ans = 'Cant comprehend'
@@ -106,7 +111,7 @@ def check_get_intents(result: dict, patient: Patient):
             ans = time_selected_response(hh, patient)
 
         if patient.time and patient.dentistName and intentName == CONFIRMATION:
-            ans = confirmation(result['entities']['confirmation:confirmation'], patient)
+            ans = confirmation(result['entities']['confirmation:confirmation'][0], patient)
 
     return ans, name
 
