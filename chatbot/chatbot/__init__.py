@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from flask import Flask
-
+from flask_cors import CORS
 import v1
 
 
@@ -12,6 +12,7 @@ def create_app():
     app.register_blueprint(
         v1.bp,
         url_prefix='/v1')
+    CORS(app)
     return app
 
 if __name__ == '__main__':

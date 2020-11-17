@@ -5,12 +5,8 @@ import './index.css';
 
 const DUMMY_DATA = [
   {
-    senderId: "Botez",
-    text: "Hello"
-  },
-  {
-    senderId: "Yash",
-    text: "Hi"
+    senderId: "Dental Bot",
+    text: "Hello, what is your name?",
   }
 ]
 
@@ -24,8 +20,8 @@ class App extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
   }
 
-  sendMessage(text) {
-    var msg = {senderId: "ab", text: text}
+  sendMessage(text, senderId) {
+    var msg = {senderId: senderId, text: text}
     DUMMY_DATA.push(msg)
     this.setState({
       messages: DUMMY_DATA
@@ -51,12 +47,16 @@ class MessageList extends React.Component {
         {this.props.messages.map((message, index) => {
           return (
            <li key={index}>
-             <div>
-               <b>{message.senderId}</b>
-             </div>
-             <div>
-               {message.text}
-             </div>
+             {
+              ( message.senderId  === "Dental Bot") ? 
+              <div>
+                {message.text}
+              </div> : 
+                 <div>
+                 <b>{message.text} </b>
+                 </div> 
+             }
+            
            </li>
          )
        })}
@@ -73,24 +73,57 @@ class SendMessageForm extends React.Component {
   constructor() {
       super()
       this.state = {
-          message: ''
+          message: '',
+          isLoaded : false,
+          error: null,
+          items: [],
+          patient : ''
       }
       this.handleChange = this.handleChange.bind(this)
       this.handleSubmit = this.handleSubmit.bind(this)
+
+
   }
   
   handleChange(e) {
       this.setState({
           message: e.target.value
       })
+      
   }
   
-  handleSubmit(e) {
+  
+  async handleSubmit(e) {
       e.preventDefault()
-      this.props.sendMessage(this.state.message)
+      this.props.sendMessage(this.state.message, this.state.patient)
       this.setState({
           message: ''
       })
+
+      await fetch("http://localhost:5000/v1/ask?message="+this.state.message + '&patient='+this.state.patient)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        items: result,
+                        patient : result.name
+                    });
+                    console.log(result)
+                    
+
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+            this.props.sendMessage(this.state.items.answer, "Dental Bot")
   }
   
   render() {
