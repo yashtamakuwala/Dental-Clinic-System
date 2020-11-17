@@ -11,11 +11,12 @@ class Booking:
         params = build_params(dentistName, time, patientName)
 
         result = requests.get(ep, params=params)
-        result = result.json()
         if result.status_code == 200:
+            result = result.json()
             return result['data']
         else:
             return None
+
 
     # TODO: input validation
     def add_booking(self, dentistName: str, time: str, patientName: str) -> int:

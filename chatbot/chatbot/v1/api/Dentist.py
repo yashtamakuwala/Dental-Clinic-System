@@ -14,8 +14,5 @@ class Dentist:
 
         result = requests.get(ep)
         result = result.json()
-        ans = str()
         result = result["data"]
         return result
-
-    # def get_dentisit_by_id(self, id: int):
