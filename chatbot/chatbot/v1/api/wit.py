@@ -8,7 +8,7 @@ dentist = Dentist()
 
 
 def ask_wit(expression: str, patient: Patient):
-    ep = 'https://api.wit.ai/message?v=20201112&q={}'.format(expression)
+    ep = 'https://api.wit.ai/message?v=20201117&q={}'.format(expression)
     headers = {'Authorization': WIT_TOKEN}
 
     result = requests.get(ep, headers=headers)
@@ -60,6 +60,7 @@ def answer_greeting(result: dict):
 def check_get_intents(result: dict, patient: Patient):
     GET_DENTISTS_INTENT = "getDentists"
     GET_NAME_INTENT = "dentistName"
+
     intents = result['intents']
     isGetDentists = False
     isGetName = False
