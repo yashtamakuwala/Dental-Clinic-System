@@ -36,9 +36,9 @@ class Booking:
         result = requests.delete(ep)
 
         if result.status_code == 204:
-            return 'Deleted.'
+            return True
         else:
-            return None
+            return False
 
 def build_params(dentistName: str, time: str, patientName: str):
     params = {}

@@ -112,6 +112,7 @@ def check_get_intents(result: dict, patient: Patient):
             # TODO: check the 24 hr time values
             ans = time_selected_response(hh, patient)
 
+        # Ask for confirmation of booking
         if patient.time and patient.dentistName and intentName == CONFIRMATION:
             ans = confirmation(result['entities']['confirmation:confirmation'][0], patient)
 
@@ -119,6 +120,7 @@ def check_get_intents(result: dict, patient: Patient):
         if patient.name and intentName == CANCELLATION \
                 and not patient.dentistName and not patient.cancelTime:
             ans = get_bookings_to_cancel(patient)
+            break
 
         # get all bookings and ask by dentist name
         if patient.name and intentName == GET_NAME_INTENT \
@@ -134,11 +136,12 @@ def check_get_intents(result: dict, patient: Patient):
             hh, mm = time_entity(witTime)
             # TODO: check the 24 hr time values
             ans = cancel_time_response(hh, patient)
+            break
 
         # Got cancel details and now confirmation to cancel
         if patient.name and patient.wantingToCancel and \
-                patient.cancelDentist and patient.cancelTime:
-            ans = confirmation(result['entities']['confirmation:confirmation'][0], patient)
+                patient.cancelDentist and patient.cancelTime and intentName == CONFIRMATION:
+            ans = confirm_cancel(result['entities']['confirmation:confirmation'][0], patient)
 
     return ans, name
 
@@ -146,7 +149,7 @@ def check_get_intents(result: dict, patient: Patient):
 def cancel_time_response(time: str, patient: Patient):
     patient.cancelTime = time
     ans = f"Are you sure you want to cancel " \
-          f"your booking with {patient.dentistName} at {time}"
+          f"your booking with {patient.cancelDentist} at {time}"
     return ans
 
 
@@ -188,7 +191,19 @@ def confirm_cancel(confirmDict: dict, patient: Patient):
     if value:
         res = booking.get_bookings(dentistName=patient.cancelDentist, time=patient.cancelTime,
                                    patientName=patient.name)
-        id = res[0]['id']
+        if res:
+            bId = res[0]['id']
+            res = booking.delete_booking(bId)
+            if res:
+                ans = 'Booking deleted.'
+            else:
+                ans = 'Please try again.'
+        else:
+            return 'Please check details.'
+    else:
+        ans = 'Okay. How else may I assist you?'
+    return ans
+
 
 
 def confirmation(confirmDict: dict, patient: Patient):
