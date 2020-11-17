@@ -8,7 +8,7 @@ import v1
 
 def create_app():
     app = Flask(__name__, static_folder='static')
-    app.patients = dict()
+    app.patients = list()
     app.register_blueprint(
         v1.bp,
         url_prefix='/v1')

@@ -1,11 +1,14 @@
 class Patient:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self):
+        self.name = None
         self.hiDone = False
         self.getAllDentists = False
         self.dentistName = None
         self.time = None
         self.confirmation = False
+
+    def set_patient_name(self, ptName: str):
+        self.name = ptName
 
     def shown_dentists(self):
         self.getAllDentists = True

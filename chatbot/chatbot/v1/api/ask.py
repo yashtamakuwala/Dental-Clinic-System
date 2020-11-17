@@ -16,13 +16,18 @@ class Ask(Resource):
         patientName = g.args.get('patient')
 
         patients = current_app.patients
-        if patientName in patients:
-            patient = patients[patientName]
+        isFound = False
+        patient = None
 
-        else:  # add a patient
-            patients[patientName] = Patient(patientName)
-            patient = patients[patientName]
-            current_app.patients = patients
+        for pat in patients:
+            if patientName:
+                if pat.name == patientName:
+                    isFound = True
+                    patient = pat
+            # 1st request
+            else:
+                patient = Patient()
+                patients.append(patient)
 
         ans = ask_wit(expression, patient)
         resp = {'answer': ans}
