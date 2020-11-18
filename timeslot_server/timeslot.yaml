@@ -5,7 +5,7 @@ info:
   title: "Timeslot"
 
 basePath: "/v1"
-host: localhost:8000
+host: localhost:5000
 tags:
 - name: "timeslots"
 - name: "bookings"

@@ -5,7 +5,7 @@ info:
   title: "Dentist"
 
 basePath: "/v1"
-host: localhost:7000
+host: localhost:5000
   
 schemes:
 - "https"
