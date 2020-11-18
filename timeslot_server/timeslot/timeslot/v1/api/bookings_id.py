@@ -5,7 +5,7 @@ from flask import request, g
 
 from . import Resource
 from .. import schemas
-from timeslot.timeslot.v1.Booking import Booking
+from ..Booking import Booking
 
 class BookingsId(Resource):
 

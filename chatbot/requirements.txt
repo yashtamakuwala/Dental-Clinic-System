@@ -3,3 +3,5 @@ Jinja2
 Flask-RESTful
 jsonschema
 six
+flask_cors
+requests

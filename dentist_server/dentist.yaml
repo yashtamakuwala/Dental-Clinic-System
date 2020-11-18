@@ -5,7 +5,7 @@ info:
   title: "Dentist"
 
 basePath: "/v1"
-host: localhost:5000
+host: localhost:7000
   
 schemes:
 - "https"
@@ -35,25 +35,6 @@ paths:
         "500":
           description: "Internal Server Error"
             
-        
-  /dentists/{id}:
-    get:
-      summary: Get dentists
-      produces: 
-        - application/json
-      parameters:
-        - in: path
-          name: id
-          description: dentist identifier
-          required: true
-          type: integer
-      responses:
-        200:
-          description: OK
-          schema:
-            $ref: '#/definitions/dentist'
-        404:
-          description: "Dentist doesn't exist."
 
 definitions:
   dentist:

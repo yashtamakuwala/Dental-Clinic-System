@@ -41,34 +41,6 @@
           }
         }
       }
-    },
-    "/dentists/{id}": {
-      "get": {
-        "summary": "Get dentists",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "dentist identifier",
-            "required": true,
-            "type": "integer"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/dentist"
-            }
-          },
-          "404": {
-            "description": "Dentist doesn't exist."
-          }
-        }
-      }
     }
   },
   "definitions": {

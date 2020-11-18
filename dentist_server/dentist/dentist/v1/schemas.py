@@ -58,7 +58,6 @@ validators = {
 
 filters = {
     ('dentists', 'GET'): {200: {'headers': None, 'schema': {'properties': {'data': {'type': 'array', 'items': {'$ref': '#/definitions/dentist'}}}}}, 500: {'headers': None, 'schema': None}},
-    ('dentists_id', 'GET'): {200: {'headers': None, 'schema': {'$ref': '#/definitions/dentist'}}, 404: {'headers': None, 'schema': None}},
 }
 
 scopes = {

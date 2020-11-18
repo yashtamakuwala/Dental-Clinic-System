@@ -6,7 +6,7 @@ from flask import request, g
 from . import Resource
 from .. import schemas
 import hashlib
-from timeslot.timeslot.v1.Booking import Booking
+from ..Booking import Booking
 import json
 
 
