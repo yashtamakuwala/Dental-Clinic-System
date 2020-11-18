@@ -34,7 +34,7 @@ def ask_wit(expression: str, patient: Patient):
                 return ans2, name
 
     except KeyError as error:
-        ans = 'Cant comprehend'
+        ans = 'Could not process. Whats your good name?', ''
     return ans
 
 
@@ -241,6 +241,14 @@ def confirmation(confirmDict: dict, patient: Patient):
 
 def time_selected_response(hh: str, patient: Patient) -> str:
     hh = str(hh if hh < 16 else hh - 12)
+    validHours = timeslot.get_all_timeslots().split(',')
+
+    if hh not in validHours:
+        ans = f'Invalid time. Please try alternate time format or {alternate_timeslots(hh)}.'
+        return ans
+
+    if hh not in validHours:
+        ans = f'Invalid time selected. Please check from {str(validHours)}'
     ans = None
     result = booking.get_bookings(dentistName=patient.dentistName,
                                   time=hh, patientName=None)
