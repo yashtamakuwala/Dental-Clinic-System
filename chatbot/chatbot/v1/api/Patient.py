@@ -47,5 +47,16 @@ class Patient:
     def decline_appointment(self):
         self.confirmation = False
 
+    def booking_cancelled(self):
+        self.getAllDentists = False
+        self.dentistName = None
+        self.time = None
+        self.confirmation = False
+        self.wantingToCancel = False
+        self.bookingId = None
+        self.cancelDentist = None
+        self.cancelTime = None
+        self.cancelDone = False
+
 
 

@@ -88,7 +88,10 @@ def check_get_intents(result: dict, patient: Patient):
             allDentists = dentist.get_all_dentists(name=None)
             allDentists = available_dentists(allDentists)
             ans, id = ans_dentist(allDentists)
-            patient.shown_dentists()
+            if ans:
+                patient.shown_dentists()
+            else:
+                ans = 'No dentists are available. Please try again later.'
             break
 
         #  Patient name available so this name is doctor name
@@ -122,9 +125,9 @@ def check_get_intents(result: dict, patient: Patient):
             ans = get_bookings_to_cancel(patient)
             break
 
-        # get all bookings and ask by dentist name
+        # get all bookings to cancel and ask by dentist name
         if patient.name and intentName == GET_NAME_INTENT \
-                and patient.wantingToCancel and not patient.cancelDentist:
+                and patient.wantingToCancel:
             cancelDentist = get_name(entities=result['entities'])
             ans = cancel_dentist_response(cancelDentist, patient)
             break
@@ -146,10 +149,21 @@ def check_get_intents(result: dict, patient: Patient):
     return ans, name
 
 
-def cancel_time_response(time: str, patient: Patient):
-    patient.cancelTime = time
-    ans = f"Are you sure you want to cancel " \
-          f"your booking with {patient.cancelDentist} at {time}"
+def cancel_time_response(hh: str, patient: Patient):
+    result = booking.get_bookings(dentistName=patient.cancelDentist, time=hh,
+                                  patientName=patient.name)
+    isFound = False
+    for book in result:
+        if book['time'] == hh:
+            isFound = True
+    hhDay = ans_time_string(hh)
+    if result:
+        patient.cancelTime = hh
+
+        ans = f"Are you sure you want to cancel " \
+              f"your booking with {patient.cancelDentist} at {hhDay}"
+    else:
+        ans = f'Booking at time {hhDay} not found. Please check time.'
     return ans
 
 
@@ -162,9 +176,9 @@ def cancel_dentist_response(cancelDentist: str, patient: Patient):
         if result:
             t = str()
             for app in result:
-                t += str(app['time']) + ', '
-                t = t[:-2]
-            ans = f'you have appointment with {cancelDentist} at {t}. Select time you want to cancel.'
+                t += str(ans_time_string(app['time'])) + ', '
+            t = t[:-2]
+            ans = f'you have appointment(s) with {cancelDentist} at {t}. Select time you want to cancel.'
     else:
         ans = f'Dentist by the name {cancelDentist} not found.'
     return ans
@@ -177,7 +191,7 @@ def get_bookings_to_cancel(patient: Patient):
 
     if allBookings:
         for appoint in allBookings:
-            ans += str(appoint['time']) + f" with dentist {appoint['dentistName']}" + ', '
+            ans += str(ans_time_string(appoint['time'])) + f" with dentist {appoint['dentistName']}" + ', '
         ans = ans[:-2]
     ans = f'You have booking(s) at {ans}. Enter dentist whose booking you wish to cancel.'
     return ans
@@ -195,7 +209,8 @@ def confirm_cancel(confirmDict: dict, patient: Patient):
             bId = res[0]['id']
             res = booking.delete_booking(bId)
             if res:
-                ans = 'Booking deleted.'
+                ans = f'Booking deleted. How else can I assist you {patient.name}'
+                patient.booking_cancelled()
             else:
                 ans = 'Please try again.'
         else:
@@ -213,7 +228,6 @@ def confirmation(confirmDict: dict, patient: Patient):
     # Yes, book booking
     if value:
         patient.confirmation = True
-        # TODO: check if patient already has a booking at that time.
         res = booking.get_bookings(dentistName=None, time=patient.time,
                                    patientName=patient.name)
 
@@ -238,18 +252,29 @@ def confirmation(confirmDict: dict, patient: Patient):
         patient.decline_appointment()
     return ans
 
+# can take hh of 24hr time system
+def ans_time_string(hh: str):
+    day = 'am'
+    hhInt = int(hh)
+    if hhInt == 12:
+        day = 'pm'
+    elif hhInt > 12:
+        day = 'pm'
+        hhInt -= 12
+    else:
+        day = 'am'
+    return f'{str(hhInt)}{day}'
 
 def time_selected_response(hh: str, patient: Patient) -> str:
-    hh = str(hh if hh < 16 else hh - 12)
+    hh = str(hh)
     validHours = timeslot.get_all_timeslots().split(',')
-
+    # test_list = [int(i) for i in test_list]
     if hh not in validHours:
         ans = f'Invalid time. Please try alternate time format or {alternate_timeslots(hh)}.'
         return ans
 
-    if hh not in validHours:
-        ans = f'Invalid time selected. Please check from {str(validHours)}'
     ans = None
+    hh = ans_time_string(hh)
     result = booking.get_bookings(dentistName=patient.dentistName,
                                   time=hh, patientName=None)
 

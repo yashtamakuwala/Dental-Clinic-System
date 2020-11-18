@@ -17,10 +17,10 @@ class App extends React.Component {
        messages: DUMMY_DATA
     }
 
-    this.sendMessage = this.sendMessage.bind(this)
+    this.sendText = this.sendText.bind(this)
   }
 
-  sendMessage(text, senderId) {
+  sendText(text, senderId) {
     var msg = {senderId: senderId, text: text}
     DUMMY_DATA.push(msg)
     this.setState({
@@ -32,14 +32,14 @@ class App extends React.Component {
     return (
       <div className="app">
         <Title />
-        <MessageList messages={this.state.messages}/>
-        <SendMessageForm sendMessage={this.sendMessage}/>
+        <DisplayMessages messages={this.state.messages}/>
+        <UserInputForm sendText={this.sendText}/>
      </div>
     )
   }
 }
 
-class MessageList extends React.Component {
+class DisplayMessages extends React.Component {
 
   render() {
     return (
@@ -69,7 +69,7 @@ function Title() {
   return <p className="title">My Dental Clinic chat bot</p>
 }
 
-class SendMessageForm extends React.Component {
+class UserInputForm extends React.Component {
   constructor() {
       super()
       this.state = {
@@ -95,7 +95,7 @@ class SendMessageForm extends React.Component {
   
   async handleSubmit(e) {
       e.preventDefault()
-      this.props.sendMessage(this.state.message, this.state.patient)
+      this.props.sendText(this.state.message, this.state.patient)
       this.setState({
           message: ''
       })
@@ -123,7 +123,7 @@ class SendMessageForm extends React.Component {
                     });
                 }
             )
-            this.props.sendMessage(this.state.items.answer, "Dental Bot")
+            this.props.sendText(this.state.items.answer, "Dental Bot")
   }
   
   render() {
