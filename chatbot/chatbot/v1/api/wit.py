@@ -95,13 +95,13 @@ def check_get_intents(result: dict, patient: Patient):
         if intentName == GET_NAME_INTENT \
                 and patient.name and not patient.dentistName \
                 and not patient.wantingToCancel:
-            name = get_name(result['entities'])
-            result = dentist.get_all_dentists(name)
+            dentName = get_name(result['entities'])
+            result = dentist.get_all_dentists(dentName)
             if result:
                 ans, id = ans_dentist(result)
                 patient.got_dentist_name(result[0]['name'])
             else:
-                ans = f'Dentist by the name {name} not found.'
+                ans = f'Dentist by the name {dentName} not found.'
             break
 
         # Patient has selected doctor and asking for appointment at a particular time
@@ -225,7 +225,7 @@ def confirmation(confirmDict: dict, patient: Patient):
         bId = booking.add_booking(dentistName=patient.dentistName, time=patient.time,
                                   patientName=patient.name)
         if bId:
-            ans = f'Hey {patient.name} your booking with Dr. {patient.dentistName}' \
+            ans = f'Hey {patient.name}, your booking with Dr. {patient.dentistName} ' \
                   f'at {patient.time} has been confirmed. ' \
                   f'Your booking id is {bId}. ' \
                   f'See you tomorrow at {patient.time}.'
@@ -250,7 +250,7 @@ def time_selected_response(hh: str, patient: Patient) -> str:
     if result:
         altHours = alternate_timeslots(hh=hh)
         ans = f'Dr. {patient.dentistName} is booked at {hh}. ' \
-              f'Here are alternate 1 hr timeslots you might want to book for.' \
+              f'Here are alternate 1 hr timeslots you might want to book for. ' \
               f'You can book from - {altHours}'
 
     else:
@@ -264,6 +264,8 @@ def alternate_timeslots(hh: str):
     validHours = timeslot.get_all_timeslots()
     validHours = set(validHours.split(','))
     validHours = validHours.difference({hh})
+    validHours = list(validHours)
+    validHours.sort()
     validHours = ' ,'.join(validHours)
     return validHours
 
