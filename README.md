@@ -16,7 +16,7 @@ The specification are deliberately left open to allow students to take follow th
 
 
 
-API Implementation (5 Marks) 
+API Implementation
 
 System overview
 
